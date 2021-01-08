@@ -1,10 +1,9 @@
-import { format } from "date-fns"
-import { formatDistanceToNow } from "date-fns"
+import { format, formatDistanceToNow } from "date-fns"
 import numeral from "numeral"
 import { getNextAirdropDate, getNextAirdropHeight } from "./helpers/calc"
 import styles from "./AirdropTimer.module.scss"
 
-const FMT = "EEEE aa HH:mm"
+const FMT = "MMM d aa HH:mm"
 
 const AirdopTimer = ({ height, now }: { height: number; now: Date }) => {
   const nextAidropHeight = getNextAirdropHeight(height)
