@@ -1,0 +1,17 @@
+.article {
+  & + & {
+    margin-top: 30px;
+  }
+}
+
+.title {
+  color: #6d738c;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.content {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+}
