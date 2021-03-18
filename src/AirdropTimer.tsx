@@ -1,5 +1,6 @@
 import { format, formatDistanceToNow } from "date-fns"
 import numeral from "numeral"
+import { reverse } from "ramda"
 import { GENESIS_ANC, GENESIS_MIR } from "./helpers/calc"
 import { getNextAirdropDate, getNextAirdropHeight } from "./helpers/calc"
 import styles from "./AirdropTimer.module.scss"
@@ -19,37 +20,48 @@ const AirdopTimer = ({ height, now }: { height: number; now: Date }) => {
   const nextAidropHeightANC = getNextAirdropHeight(GENESIS_ANC, height)
   const nextAirdropDateANC = getNextAirdropDate(GENESIS_ANC, height, now)
 
-  const contents = [
+  const headingContents = [
     {
       title: "Latest block",
       content: numeral(height).format(),
     },
   ]
 
-  const contentsMIR = [
+  const timerContents = [
     {
-      title: "Next airdrop block",
-      content: numeral(nextAidropHeightMIR).format(),
+      img: { src: IMAGE_MIR, alt: "MIR" },
+      text: formatDistanceToNow(nextAirdropDateMIR, { addSuffix: true }),
+      contents: [
+        {
+          title: "Next airdrop block",
+          content: numeral(nextAidropHeightMIR).format(),
+        },
+        {
+          title: "Next airdrop date (estimated)",
+          content: format(nextAirdropDateMIR, FMT),
+        },
+      ],
     },
     {
-      title: "Next airdrop date (estimated)",
-      content: format(nextAirdropDateMIR, FMT),
+      img: { src: IMAGE_ANC, alt: "ANC" },
+      text: formatDistanceToNow(nextAirdropDateANC, { addSuffix: true }),
+      contents: [
+        {
+          title: "Next airdrop block",
+          content: numeral(nextAidropHeightANC).format(),
+        },
+        {
+          title: "Next airdrop date (estimated)",
+          content: format(nextAirdropDateANC, FMT),
+        },
+      ],
     },
   ]
 
-  const contentsANC = [
-    {
-      title: "Next airdrop block",
-      content: numeral(nextAidropHeightANC).format(),
-    },
-    {
-      title: "Next airdrop date (estimated)",
-      content: format(nextAirdropDateANC, FMT),
-    },
-  ]
-
-  const toNowMIR = formatDistanceToNow(nextAirdropDateMIR, { addSuffix: true })
-  const toNowANC = formatDistanceToNow(nextAirdropDateANC, { addSuffix: true })
+  const sorted =
+    nextAidropHeightMIR < nextAidropHeightANC
+      ? timerContents
+      : reverse(timerContents)
 
   const renderContents = ({ title, content }: Contents) => (
     <article className={styles.article} key={title}>
@@ -61,24 +73,18 @@ const AirdopTimer = ({ height, now }: { height: number; now: Date }) => {
   return (
     <>
       <section className={styles.latest}>
-        {contents.map(renderContents)}
+        {headingContents.map(renderContents)}
       </section>
 
-      <section className={styles.card}>
-        <h1 className={styles.heading}>
-          <img src={IMAGE_MIR} width={30} height={30} alt="MIR" />
-          {toNowMIR}
-        </h1>
-        {contentsMIR.map(renderContents)}
-      </section>
-
-      <section className={styles.card}>
-        <h1 className={styles.heading}>
-          <img src={IMAGE_ANC} width={30} height={30} alt="ANC" />
-          {toNowANC}
-        </h1>
-        {contentsANC.map(renderContents)}
-      </section>
+      {sorted.map(({ img, text, contents }) => (
+        <section className={styles.card}>
+          <h1 className={styles.heading}>
+            <img {...img} width={30} height={30} alt={img.alt} />
+            {text}
+          </h1>
+          {contents.map(renderContents)}
+        </section>
+      ))}
     </>
   )
 }
