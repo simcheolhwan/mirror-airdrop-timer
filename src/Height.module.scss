@@ -1,0 +1,20 @@
+.card {
+  border-top: 1px solid rgba(#505466, 0.2);
+  padding: 20px 0;
+}
+
+.dim {
+  opacity: 0.25;
+}
+
+.heading {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  img {
+    margin-right: 10px;
+  }
+
+  color: white;
+}
